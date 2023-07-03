@@ -28,4 +28,12 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now());
         return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(ReportNotFoundException.class)
+    public final ResponseEntity<ErrorMessage> handleReportNotFoundException(Exception exception, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                exception.getMessage(),
+                LocalDateTime.now());
+        return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
+    }
 }

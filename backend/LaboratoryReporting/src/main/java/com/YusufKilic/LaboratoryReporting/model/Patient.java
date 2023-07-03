@@ -45,7 +45,6 @@ public class Patient {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", identificationNumber=" + identificationNumber +
-                ", report=" + report +
                 '}';
     }
 }

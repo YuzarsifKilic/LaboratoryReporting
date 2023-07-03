@@ -46,7 +46,6 @@ public class Laborant {
                 ", firstName='" + firstName + '\'' +
                 ", lastName='" + lastName + '\'' +
                 ", hospitalNumber='" + hospitalNumber + '\'' +
-                ", report=" + report +
                 '}';
     }
 }

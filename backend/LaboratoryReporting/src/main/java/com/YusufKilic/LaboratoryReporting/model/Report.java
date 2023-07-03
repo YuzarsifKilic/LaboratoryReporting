@@ -1,14 +1,12 @@
 package com.YusufKilic.LaboratoryReporting.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Objects;
 
@@ -17,16 +15,17 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Report {
+public class Report implements Comparable {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     @ManyToOne
     @JoinColumn(name = "patient_id")
     private Patient patient;
     private String diagnosisHeader;
     private String diagnosisDescription;
-    private Date reportDate;
+    private LocalDateTime reportDate;
     @ManyToOne
     @JoinColumn(name = "laborant_id")
     private Laborant laborant;
@@ -48,11 +47,18 @@ public class Report {
     public String toString() {
         return "Report{" +
                 "id=" + id +
-                ", patient=" + patient.toString() +
+                ", patient=" + patient +
                 ", diagnosisHeader='" + diagnosisHeader + '\'' +
                 ", diagnosisDescription='" + diagnosisDescription + '\'' +
                 ", reportDate=" + reportDate +
-                ", laborant=" + laborant.toString() +
+                ", laborant=" + laborant +
                 '}';
+    }
+
+
+    @Override
+    public int compareTo(Object o) {
+        Report r = (Report) o;
+        return reportDate.compareTo(r.getReportDate());
     }
 }
