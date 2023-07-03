@@ -1,9 +1,6 @@
 package com.YusufKilic.LaboratoryReporting;
 
-import com.YusufKilic.LaboratoryReporting.model.Laborant;
-import com.YusufKilic.LaboratoryReporting.model.Patient;
-import com.YusufKilic.LaboratoryReporting.model.Report;
-import com.YusufKilic.LaboratoryReporting.model.User;
+import com.YusufKilic.LaboratoryReporting.model.*;
 import com.YusufKilic.LaboratoryReporting.repository.LaborantRepository;
 import com.YusufKilic.LaboratoryReporting.repository.PatientRepository;
 import com.YusufKilic.LaboratoryReporting.repository.ReportRepository;
@@ -30,7 +27,6 @@ public class LaboratoryReportingApplication {
 										PatientRepository patientRepository,
 										ReportRepository reportRepository) {
 		return args -> {
-			userRepository.save(new User(1, "yuzarsif", "yuzarsif"));
 			Laborant laborant = Laborant.builder()
 					.id(1L)
 					.firstName("Yusuf")
@@ -39,6 +35,14 @@ public class LaboratoryReportingApplication {
 					.build();
 			laborantRepository.save(laborant);
 
+			Laborant laborant2 = Laborant.builder()
+					.id(2L)
+					.firstName("Ömer")
+					.lastName("Budak")
+					.hospitalNumber("1234567")
+					.build();
+			laborantRepository.save(laborant2);
+
 			Patient patient = Patient.builder()
 					.id(1L)
 					.firstName("Zeynep")
@@ -46,6 +50,14 @@ public class LaboratoryReportingApplication {
 					.identificationNumber(1234567890)
 					.build();
 			patientRepository.save(patient);
+
+			Patient patient2 = Patient.builder()
+					.id(2L)
+					.firstName("Elif")
+					.lastName("Taşçı")
+					.identificationNumber(1234567890)
+					.build();
+			patientRepository.save(patient2);
 
 			Report report1 = Report.builder()
 					.diagnosisHeader("Nezle")
@@ -75,7 +87,15 @@ public class LaboratoryReportingApplication {
 					.build();
 			reportRepository.save(report3);
 
+			Report report4 = Report.builder()
+					.diagnosisHeader("Nezle")
+					.diagnosisDescription("Soğuk Algınlığı")
+					.reportDate(LocalDateTime.now())
+					.laborant(laborant2)
+					.patient(patient2)
+					.build();
 
+			reportRepository.save(report4);
 		};
 	}
 

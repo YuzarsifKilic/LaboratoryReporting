@@ -1,6 +1,5 @@
 package com.YusufKilic.LaboratoryReporting.exception;
 
-import org.apache.coyote.Response;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -16,24 +15,28 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
     @ExceptionHandler(Exception.class)
     public final ResponseEntity<ErrorMessage> handleAllException(Exception exception, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
-                exception.getMessage(),
-                LocalDateTime.now());
+                exception.getMessage());
         return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    @ExceptionHandler(UsernameNotFoundException.class)
+    @ExceptionHandler(UserNotFoundException.class)
     public final ResponseEntity<ErrorMessage> handleUsernameNotFoundException(Exception exception, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
-                exception.getMessage(),
-                LocalDateTime.now());
+                exception.getMessage());
         return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ReportNotFoundException.class)
     public final ResponseEntity<ErrorMessage> handleReportNotFoundException(Exception exception, WebRequest request) {
         ErrorMessage errorMessage = new ErrorMessage(
-                exception.getMessage(),
-                LocalDateTime.now());
+                exception.getMessage());
+        return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public final ResponseEntity<ErrorMessage> authenticationException(Exception exception, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                exception.getMessage());
         return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
     }
 }
