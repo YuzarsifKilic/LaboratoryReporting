@@ -39,4 +39,19 @@ public class GeneralExceptionHandler extends ResponseEntityExceptionHandler {
                 exception.getMessage());
         return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler(LaborantNotFoundException.class)
+    public final ResponseEntity<ErrorMessage> handleLaborantNotFoundException(Exception exception, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                exception.getMessage());
+        return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PatientNotFoundException.class)
+    public final ResponseEntity<ErrorMessage> handlePatientNotFoundException(Exception exception, WebRequest request) {
+        ErrorMessage errorMessage = new ErrorMessage(
+                exception.getMessage());
+        return new ResponseEntity<ErrorMessage>(errorMessage, HttpStatus.NOT_FOUND);
+    }
+
 }

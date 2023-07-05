@@ -1,13 +1,15 @@
 package com.YusufKilic.LaboratoryReporting.controller;
 
-import com.YusufKilic.LaboratoryReporting.dto.ReportDto;
-import com.YusufKilic.LaboratoryReporting.dto.ReportRequestByLaborant;
-import com.YusufKilic.LaboratoryReporting.dto.ReportRequestByPatient;
-import com.YusufKilic.LaboratoryReporting.dto.ReportUpdateRequest;
+import com.YusufKilic.LaboratoryReporting.dto.*;
 import com.YusufKilic.LaboratoryReporting.service.ReportService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Set;
 
@@ -19,6 +21,29 @@ public class ReportController {
 
     public ReportController(ReportService reportService) {
         this.reportService = reportService;
+    }
+
+    @PostMapping("/create")
+    public ResponseEntity<Long> createReport(@RequestBody CreateReportRequest request) {
+        return ResponseEntity.ok(reportService.createReport(request));
+    }
+
+    @GetMapping("/getReport/{id}")
+    public ResponseEntity<ReportDto> getReportById(@PathVariable Long id) {
+        return ResponseEntity.ok(reportService.findReportByGivenId(id));
+    }
+
+    @PostMapping("/saveImage/{id}")
+    public void uploadImage(@RequestParam("image")MultipartFile file, @PathVariable Long id) throws IOException {
+        reportService.uploadImageToReport(id, file);
+    }
+
+    @GetMapping("/getImage/{id}")
+    public ResponseEntity<?> downloadImage(@PathVariable Long id) {
+        byte[] bytes = reportService.downloadImage(id);
+        return ResponseEntity.status(HttpStatus.OK)
+                .contentType(MediaType.valueOf("image/png"))
+                .body(bytes);
     }
 
     @GetMapping("/getByDate")
@@ -41,6 +66,7 @@ public class ReportController {
         return ResponseEntity.ok(reportService.updateReport(request));
     }
 
+    @PreAuthorize("hasAuthority('ADMIN')")
     @DeleteMapping("/{id}")
     public void deleteReportById(@PathVariable Long id) {
         reportService.deleteReportById(id);

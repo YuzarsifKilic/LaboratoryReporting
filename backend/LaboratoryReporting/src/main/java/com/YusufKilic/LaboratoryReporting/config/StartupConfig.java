@@ -18,5 +18,6 @@ public class StartupConfig implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         userService.createUser(new User(1, "yuzarsif", "yuzarsif", Role.USER));
+        userService.createUser(new User(2, "admin", "admin", Role.ADMIN));
     }
 }

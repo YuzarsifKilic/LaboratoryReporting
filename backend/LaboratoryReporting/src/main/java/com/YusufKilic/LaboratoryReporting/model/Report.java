@@ -1,5 +1,6 @@
 package com.YusufKilic.LaboratoryReporting.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.Arrays;
 import java.util.Objects;
 
 @Entity
@@ -25,7 +26,11 @@ public class Report implements Comparable {
     private Patient patient;
     private String diagnosisHeader;
     private String diagnosisDescription;
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSSZ", shape = JsonFormat.Shape.STRING)
     private LocalDateTime reportDate;
+    @Lob
+    @Column(name = "imagedata",length = 1000)
+    private byte[] imageData;
     @ManyToOne
     @JoinColumn(name = "laborant_id")
     private Laborant laborant;
@@ -35,12 +40,14 @@ public class Report implements Comparable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Report report = (Report) o;
-        return Objects.equals(id, report.id) && Objects.equals(patient, report.patient) && Objects.equals(diagnosisHeader, report.diagnosisHeader) && Objects.equals(diagnosisDescription, report.diagnosisDescription) && Objects.equals(reportDate, report.reportDate) && Objects.equals(laborant, report.laborant);
+        return Objects.equals(id, report.id) && Objects.equals(patient, report.patient) && Objects.equals(diagnosisHeader, report.diagnosisHeader) && Objects.equals(diagnosisDescription, report.diagnosisDescription) && Objects.equals(reportDate, report.reportDate) && Arrays.equals(imageData, report.imageData) && Objects.equals(laborant, report.laborant);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, patient, diagnosisHeader, diagnosisDescription, reportDate, laborant);
+        int result = Objects.hash(id, patient, diagnosisHeader, diagnosisDescription, reportDate, laborant);
+        result = 31 * result + Arrays.hashCode(imageData);
+        return result;
     }
 
     @Override

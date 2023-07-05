@@ -2,6 +2,8 @@ package com.YusufKilic.LaboratoryReporting.service;
 
 import com.YusufKilic.LaboratoryReporting.dto.LaborantDto;
 import com.YusufKilic.LaboratoryReporting.dto.LaborantDtoConverter;
+import com.YusufKilic.LaboratoryReporting.exception.LaborantNotFoundException;
+import com.YusufKilic.LaboratoryReporting.model.Laborant;
 import com.YusufKilic.LaboratoryReporting.repository.LaborantRepository;
 import org.springframework.stereotype.Service;
 
@@ -22,5 +24,11 @@ public class LaborantService {
                 .stream()
                 .map(LaborantDtoConverter::converter)
                 .collect(Collectors.toList());
+    }
+
+    protected Laborant findLaborantById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(
+                        () -> new LaborantNotFoundException("Laborant didnt find by id : " + id));
     }
 }

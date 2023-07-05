@@ -2,11 +2,17 @@ package com.YusufKilic.LaboratoryReporting.service;
 
 import com.YusufKilic.LaboratoryReporting.dto.*;
 import com.YusufKilic.LaboratoryReporting.exception.ReportNotFoundException;
+import com.YusufKilic.LaboratoryReporting.model.Laborant;
+import com.YusufKilic.LaboratoryReporting.model.Patient;
 import com.YusufKilic.LaboratoryReporting.model.Report;
 import com.YusufKilic.LaboratoryReporting.repository.ReportRepository;
+import com.YusufKilic.LaboratoryReporting.utils.ImageUtils;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.awt.*;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
@@ -17,14 +23,55 @@ import java.util.stream.Collectors;
 public class ReportService {
 
     private final ReportRepository repository;
+    private final LaborantService laborantService;
+    private final PatientService patientService;
 
-    public ReportService(ReportRepository repository) {
+    public ReportService(ReportRepository repository, LaborantService laborantService, PatientService patientService) {
         this.repository = repository;
+        this.laborantService = laborantService;
+        this.patientService = patientService;
+    }
+
+    public Long createReport(CreateReportRequest request) {
+        Laborant laborant = laborantService.findLaborantById(request.laborantId());
+        Patient patient = patientService.findPatientById(request.patientId());
+
+        Report report = Report.builder()
+                .diagnosisHeader(request.diagnosisHeader())
+                .diagnosisDescription(request.diagnosisDescription())
+                .reportDate(LocalDateTime.now())
+                .patient(patient)
+                .laborant(laborant)
+                .build();
+
+        return repository.save(report).getId();
+    }
+
+    public void uploadImageToReport(Long id, MultipartFile file) throws IOException {
+        Report report = findReportById(id);
+
+         report.setImageData(ImageUtils.compressImage(file.getBytes()));
+
+         repository.save(report);
+    }
+
+    public byte[] downloadImage(Long id) {
+        Report report = findReportById(id);
+
+        return ImageUtils.decompressImage(report.getImageData());
+    }
+
+    private Report findReportById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(
+                        () -> new ReportNotFoundException("Report didnt find by id : " + id));
+    }
+
+    public ReportDto findReportByGivenId(Long id) {
+        return ReportDtoConverter.converter(findReportById(id));
     }
 
     public Set<ReportDto> getAllReportByDate() {
-        //Set<Report> reportList = new TreeSet<>(repository.findAll());
-
         Set<ReportDto> collect = repository.findAll()
                 .stream()
                 .map(r -> ReportDtoConverter.converter(r))
