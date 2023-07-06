@@ -2,6 +2,7 @@
 import React, { useContext } from 'react';
 import { useState } from 'react';
 import { useAuth } from '../security/AuthContext';
+import { useNavigate } from 'react-router-dom';
 
 export default function LoginPage() {
 
@@ -10,15 +11,18 @@ export default function LoginPage() {
 
     const { login } = useAuth()
 
+    const navigate = useNavigate()
+
     const handleUsername = event  => setUsername(event.target.value);
 
     const handlePassword = event  => setPassword(event.target.value);
     
 
-     function handleClick() {
+     async function handleClick() {
         console.log(username)
         console.log(password)
-        login(username, password)
+        if (await login(username, password))
+            navigate("/report")
     }
 
     return (
@@ -56,6 +60,8 @@ export default function LoginPage() {
                 </div>
                 <button 
                     onClick={handleClick}
+                    type='button'
+                    name='button'
                     className='mt-8 bg-slate-800 rounded-xl p-2 text-white ml-36'
                 >
                     Giriş yap

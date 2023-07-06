@@ -22,21 +22,27 @@ export default function AuthProvider( { children } ) {
         try {
             const response = await executeJwtToken(username, password)
 
-            if (response.status == 200) {
+            if (response.status === 200) {
                 setJwtToken("Bearer " + response.data.accessToken)
                 setRole(response.data.user.role)
                 setUsername(response.data.user.username)
+                setIsAuthenticated(true)
+                console.log(jwtToken)
 
                 apiClient.interceptors.request.use(
                     (config) => {
                         console.log("its working for now :)")
-                        config.headers.Authorization = jwtToken
+                        config.headers.Authorization = "Bearer " + response.data.accessToken
                         return config
                     }
                 )
+                return true
+            } else {
+                return false
             }
         } catch(error) {
             console.log(error)
+            return false
         }
     }
 
@@ -45,7 +51,7 @@ export default function AuthProvider( { children } ) {
     }
 
     return (
-        <AuthContext.Provider value={ {isAuthenticated, login} } >
+        <AuthContext.Provider value={ {isAuthenticated, login, role} } >
             {children}
         </AuthContext.Provider>
     )
