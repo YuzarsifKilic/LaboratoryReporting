@@ -12,3 +12,10 @@ export const updateReport = (id, diagnosisHeader, diagnosisDescription) => apiCl
 )
 
 export const deleteReport = (id) => apiClient.delete(`/api/v1/report/${id}`)
+
+export const uploadPhotoOfReport = (id, image) => apiClient.post(`/api/v1/report/saveImage/${id}`,
+    image,
+    {
+        'Content-Type' : 'multipart/form-data'
+    }
+)

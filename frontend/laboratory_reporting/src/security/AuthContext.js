@@ -31,7 +31,6 @@ export default function AuthProvider( { children } ) {
 
                 apiClient.interceptors.request.use(
                     (config) => {
-                        console.log("its working for now :)")
                         config.headers.Authorization = "Bearer " + response.data.accessToken
                         return config
                     }
