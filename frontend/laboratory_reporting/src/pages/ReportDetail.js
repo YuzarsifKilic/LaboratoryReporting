@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom';
-import { deleteReport, getReportById, updateReport } from '../api/ReportService';
+import { deleteReport, downloadTheImage, getReportById, updateReport } from '../api/ReportService';
 import { useAuth } from '../security/AuthContext';
+import { Buffer } from 'buffer';
 
 export default function ReportDetail() {
 
@@ -19,12 +20,24 @@ export default function ReportDetail() {
 
     const [diagnosisDescription, setDiagnosisDescription] = useState(null)
 
+    const [imageSource, setimageSource] = useState(null)
+
     const handleDiagnosisHeader = event  => setDiagnosisHeader(event.target.value);
 
     const handleDiagnosisDescription = event  => setDiagnosisDescription(event.target.value);
 
     useEffect(() => {
-        getReportById(data).then((response) => setreport(response.data))
+        getReportById(data).then((response) => {
+            setreport(response.data)
+            console.log(response.data)
+            downloadTheImage(response.data.id)
+                .then((response) => {
+                    const image = Buffer.from(response.data, 'binary').toString('base64');
+                    const imageUrl = `data:image/png;base64,${image}`;
+
+                    setimageSource(imageUrl)
+                })
+        })
     })
 
     function handleUpdateButton() {
@@ -117,6 +130,9 @@ export default function ReportDetail() {
                 >
                     Raporu Sil
                 </button>}
+            </div>
+            <div className='mt-4'>
+                <img className='rounded-xl' src={imageSource}/>
             </div>
         </div>
     )

@@ -4,7 +4,8 @@ import { getAllPatients } from '../api/PatientService'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { useDropzone } from 'react-dropzone'
-import { uploadPhotoOfReport } from '../api/ReportService'
+import { createReport, uploadPhotoOfReport } from '../api/ReportService'
+import { useNavigate } from 'react-router-dom'
 
 
 
@@ -36,6 +37,10 @@ export default function AddReport() {
 
     const [diagnosisDescription, setdiagnosisDescription] = useState("")
 
+    const [reportId, setreportId] = useState(null)
+
+    const [successfull, setsuccessfull] = useState(false)
+
     useEffect(() => {
       
         getAllLaborants().then((response) => setlaborants(response.data))
@@ -47,6 +52,19 @@ export default function AddReport() {
     const handleDiagnosisHeader = event  => setdiagnosisHeader(event.target.value);
 
     const handleDiagnosisDescription= event  => setdiagnosisDescription(event.target.value);
+
+    function createTheReport() {
+      console.log(selectedLaborant)
+      console.log(selectedPatient)
+      createReport(diagnosisHeader, diagnosisDescription, selectedPatient.id, selectedLaborant.id)
+        .then((response) => {
+          console.log(response.data)
+          setreportId(response.data)
+          if (response.status === 200)
+            setsuccessfull(true)
+
+        })
+    }
 
     return (
       <div>
@@ -182,23 +200,35 @@ export default function AddReport() {
             </Listbox>
           </div>
           <div>
-              <button className='text-white w-24 bg-lime-500 rounded-2xl p-2'>
+              <button
+                onClick={createTheReport} 
+                className='text-white w-24 bg-lime-500 rounded-2xl p-2'
+              >
                 Kaydet
               </button>
-          </div>         
-          </div>
+          </div>  
           <div>
-          <Dropzone/>
+            {
+              successfull && <Dropzone id={reportId}/>
+            }
+          </div>       
           </div>
+          
         </div>
     )
 }
 
-function Dropzone() {
+function Dropzone({id}) {
+
+  const navigate = useNavigate()
+
   const onDrop = useCallback(acceptedFiles => {
     const formData = new FormData();
     formData.append("image", acceptedFiles[0])
-    uploadPhotoOfReport(1, formData).then((response) => console.log(response))
+    uploadPhotoOfReport(id, formData).then((response) => {
+      if (response.status === 200)
+        navigate("/report")
+    })
   })
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop })
@@ -206,7 +236,10 @@ function Dropzone() {
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()}/>
-      <p>Drag</p>
+      <div className='mt-4 bg-white rounded-xl'>
+        <p> Resimi Buraya Sürükleyin </p>
+        <p>Ya Da Tıklayıp Resim seçin </p>
+      </div>
     </div>
   )
 }

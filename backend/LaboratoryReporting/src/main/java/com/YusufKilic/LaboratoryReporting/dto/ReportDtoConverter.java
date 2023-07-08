@@ -9,10 +9,14 @@ public class ReportDtoConverter {
     public static ReportDto converter(Report from) {
         return new ReportDto(
                 from.getId(),
-                PatientDtoConverter.converter(from.getPatient()),
+                from.getPatient().getFirstName(),
+                from.getPatient().getLastName(),
+                from.getPatient().getIdentificationNumber(),
                 from.getDiagnosisHeader(),
                 from.getDiagnosisDescription(),
                 from.getReportDate(),
-                LaborantDtoConverter.converter(from.getLaborant()));
+                from.getLaborant().getFirstName(),
+                from.getLaborant().getLastName(),
+                from.getLaborant().getHospitalNumber());
     }
 }

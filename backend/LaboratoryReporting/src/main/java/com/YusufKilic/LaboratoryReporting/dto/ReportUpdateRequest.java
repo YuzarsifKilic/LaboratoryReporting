@@ -2,6 +2,5 @@ package com.YusufKilic.LaboratoryReporting.dto;
 
 import java.util.Date;
 
-public record ReportUpdateRequest(Long id,
-                                  String diagnosisHeader,
+public record ReportUpdateRequest(String diagnosisHeader,
                                   String diagnosisDescription) {}

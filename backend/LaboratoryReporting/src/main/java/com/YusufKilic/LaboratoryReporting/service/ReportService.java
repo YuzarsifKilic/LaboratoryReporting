@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.awt.*;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -84,10 +85,10 @@ public class ReportService {
     }
 
     @Transactional
-    public ReportDto updateReport(ReportUpdateRequest request) {
-        Report report = repository.findById(request.id())
+    public ReportDto updateReport(Long id, ReportUpdateRequest request) {
+        Report report = repository.findById(id)
                 .orElseThrow(
-                        () -> new ReportNotFoundException("Report didnt find by id : " + request.id()));
+                        () -> new ReportNotFoundException("Report didnt find by id : " + id));
 
         report.setDiagnosisHeader(request.diagnosisHeader());
         report.setDiagnosisDescription(request.diagnosisDescription());
@@ -103,10 +104,9 @@ public class ReportService {
         repository.deleteById(id);
     }
 
-    public List<ReportDto> getReportsByPatientIdentificationNumber(int id) {
+    public List<ReportDto> getAllReports() {
         return repository.findAll()
                 .stream()
-                .filter(r -> r.getPatient().getIdentificationNumber() == id)
                 .map(ReportDtoConverter::converter)
                 .collect(Collectors.toList());
     }

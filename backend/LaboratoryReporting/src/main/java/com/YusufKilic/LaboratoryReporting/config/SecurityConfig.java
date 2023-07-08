@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests((auth) -> {
                     auth.requestMatchers("/api/v1/user/**").permitAll();
                     auth.requestMatchers("/api/v1/report/**").hasAnyAuthority("ADMIN", "USER");
+                    auth.requestMatchers("/api/v1/laborant/**").hasAnyAuthority("ADMIN", "USER");
+                    auth.requestMatchers("/api/v1/patient/**").hasAnyAuthority("ADMIN", "USER");
                 })
                 .formLogin(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)

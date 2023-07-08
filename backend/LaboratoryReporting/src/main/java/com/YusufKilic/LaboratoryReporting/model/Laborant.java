@@ -1,5 +1,6 @@
 package com.YusufKilic.LaboratoryReporting.model;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
@@ -22,6 +23,7 @@ public class Laborant {
     private Long id;
     private String firstName;
     private String lastName;
+    @Column(length = 7)
     private String hospitalNumber;
     @OneToMany(mappedBy = "laborant")
     private Set<Report> report;

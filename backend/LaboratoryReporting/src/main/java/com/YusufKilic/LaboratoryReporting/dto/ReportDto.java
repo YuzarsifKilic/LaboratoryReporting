@@ -19,14 +19,18 @@ import java.time.LocalDateTime;
 public class ReportDto implements Comparable {
 
     private Long id;
-    private PatientDto patient;
+    private String patientFirstName;
+    private String patientLastName;
+    private int patientIdentificationNumber;
     private String diagnosisHeader;
     private String diagnosisDescription;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime reportDate;
-    private LaborantDto laborant;
+    private String laborantFirstName;
+    private String laborantLastName;
+    private String hospitalNumber;
 
     @Override
     public int compareTo(Object o) {

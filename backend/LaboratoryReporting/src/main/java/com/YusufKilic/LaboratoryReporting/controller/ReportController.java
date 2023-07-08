@@ -51,19 +51,24 @@ public class ReportController {
         return ResponseEntity.ok(reportService.getAllReportByDate());
     }
 
-    @GetMapping("/getByPatient")
+    @GetMapping("/getall")
+    public ResponseEntity<List<ReportDto>> getAllReports() {
+        return ResponseEntity.ok(reportService.getAllReports());
+    }
+
+    @PostMapping("/getByPatient")
     public ResponseEntity<List<ReportDto>> getReportsByPatient(@RequestBody ReportRequestByPatient request) {
         return ResponseEntity.ok(reportService.getReportsByPatient(request));
     }
 
-    @GetMapping("/getByLaborant")
+    @PostMapping("/getByLaborant")
     public ResponseEntity<List<ReportDto>> getReportsByLaborant(@RequestBody ReportRequestByLaborant request) {
         return ResponseEntity.ok(reportService.getReportsByLaborant(request));
     }
 
-    @PutMapping("/update")
-    public ResponseEntity<ReportDto> updateReport(@RequestBody ReportUpdateRequest request) {
-        return ResponseEntity.ok(reportService.updateReport(request));
+    @PutMapping("/{id}")
+    public ResponseEntity<ReportDto> updateReport(@PathVariable Long id, @RequestBody ReportUpdateRequest request) {
+        return ResponseEntity.ok(reportService.updateReport(id, request));
     }
 
     @PreAuthorize("hasAuthority('ADMIN')")
