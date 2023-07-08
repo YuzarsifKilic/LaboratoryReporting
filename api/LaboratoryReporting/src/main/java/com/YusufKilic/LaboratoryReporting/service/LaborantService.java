@@ -14,15 +14,17 @@ import java.util.stream.Collectors;
 public class LaborantService {
 
     private final LaborantRepository repository;
+    private final LaborantDtoConverter converter;
 
-    public LaborantService(LaborantRepository repository) {
+    public LaborantService(LaborantRepository repository, LaborantDtoConverter converter) {
         this.repository = repository;
+        this.converter = converter;
     }
 
     public List<LaborantDto> getAllLaborants() {
         return repository.findAll()
                 .stream()
-                .map(LaborantDtoConverter::converter)
+                .map(converter::converter)
                 .collect(Collectors.toList());
     }
 

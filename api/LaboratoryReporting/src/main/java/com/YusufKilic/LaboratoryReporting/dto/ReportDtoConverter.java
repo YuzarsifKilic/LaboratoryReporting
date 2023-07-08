@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReportDtoConverter {
 
-    public static ReportDto converter(Report from) {
+    public ReportDto converter(Report from) {
         return new ReportDto(
                 from.getId(),
                 from.getPatient().getFirstName(),

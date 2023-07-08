@@ -11,10 +11,10 @@ import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.io.IOException;
+import java.time.Clock;
+import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
@@ -26,26 +26,31 @@ public class ReportService {
     private final ReportRepository repository;
     private final LaborantService laborantService;
     private final PatientService patientService;
+    private final ReportDtoConverter converter;
+    private final Clock clock;
 
-    public ReportService(ReportRepository repository, LaborantService laborantService, PatientService patientService) {
+
+    public ReportService(ReportRepository repository, LaborantService laborantService, PatientService patientService, ReportDtoConverter converter, Clock clock) {
         this.repository = repository;
         this.laborantService = laborantService;
         this.patientService = patientService;
+        this.converter = converter;
+        this.clock = clock;
     }
 
-    public Long createReport(CreateReportRequest request) {
+    public ReportDto createReport(CreateReportRequest request) {
         Laborant laborant = laborantService.findLaborantById(request.laborantId());
         Patient patient = patientService.findPatientById(request.patientId());
 
         Report report = Report.builder()
                 .diagnosisHeader(request.diagnosisHeader())
                 .diagnosisDescription(request.diagnosisDescription())
-                .reportDate(LocalDateTime.now())
+                .reportDate(getLocalDateTimeNow())
                 .patient(patient)
                 .laborant(laborant)
                 .build();
 
-        return repository.save(report).getId();
+        return converter.converter(repository.save(report));
     }
 
     public void uploadImageToReport(Long id, MultipartFile file) throws IOException {
@@ -69,13 +74,16 @@ public class ReportService {
     }
 
     public ReportDto findReportByGivenId(Long id) {
-        return ReportDtoConverter.converter(findReportById(id));
+        Report report = repository.findById(id)
+                .orElseThrow(
+                        () -> new ReportNotFoundException("Report didnt find by id : " + id));
+        return converter.converter(report);
     }
 
     public Set<ReportDto> getAllReportByDate() {
         Set<ReportDto> collect = repository.findAll()
                 .stream()
-                .map(r -> ReportDtoConverter.converter(r))
+                .map(converter::converter)
                 .collect(Collectors.toSet());
 
         Set<ReportDto> reportList = new TreeSet<>();
@@ -96,7 +104,7 @@ public class ReportService {
 
         Report updatedReport = repository.save(report);
 
-        return ReportDtoConverter.converter(updatedReport);
+        return converter.converter(updatedReport);
     }
 
     @Transactional
@@ -107,7 +115,7 @@ public class ReportService {
     public List<ReportDto> getAllReports() {
         return repository.findAll()
                 .stream()
-                .map(ReportDtoConverter::converter)
+                .map(converter::converter)
                 .collect(Collectors.toList());
     }
 
@@ -117,7 +125,7 @@ public class ReportService {
                 .filter(r ->
                         r.getPatient().getFirstName().equals(request.firstName()) &&
                         r.getPatient().getLastName().equals(request.lastName()))
-                .map(ReportDtoConverter::converter)
+                .map(converter::converter)
                 .collect(Collectors.toList());
     }
 
@@ -127,7 +135,14 @@ public class ReportService {
                 .filter(r ->
                         r.getLaborant().getFirstName().equals(request.firstName()) &&
                         r.getLaborant().getLastName().equals(request.lastName()))
-                .map(ReportDtoConverter::converter)
+                .map(converter::converter)
                 .collect(Collectors.toList());
+    }
+
+    private LocalDateTime getLocalDateTimeNow() {
+        Instant instant = clock.instant();
+        return LocalDateTime.ofInstant(
+                instant,
+                Clock.systemDefaultZone().getZone());
     }
 }

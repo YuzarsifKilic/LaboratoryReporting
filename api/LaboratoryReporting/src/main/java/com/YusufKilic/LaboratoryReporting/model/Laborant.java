@@ -28,6 +28,7 @@ public class Laborant {
     @OneToMany(mappedBy = "laborant")
     private Set<Report> report;
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

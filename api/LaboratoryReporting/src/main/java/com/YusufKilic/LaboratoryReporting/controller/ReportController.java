@@ -24,7 +24,7 @@ public class ReportController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<Long> createReport(@RequestBody CreateReportRequest request) {
+    public ResponseEntity<ReportDto> createReport(@RequestBody CreateReportRequest request) {
         return ResponseEntity.ok(reportService.createReport(request));
     }
 

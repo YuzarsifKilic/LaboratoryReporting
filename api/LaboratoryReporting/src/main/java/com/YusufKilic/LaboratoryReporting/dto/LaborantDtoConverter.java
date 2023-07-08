@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LaborantDtoConverter {
 
-    public static LaborantDto converter(Laborant from) {
+    public LaborantDto converter(Laborant from) {
         return new LaborantDto(
                 from.getId(),
                 from.getFirstName(),

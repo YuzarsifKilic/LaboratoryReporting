@@ -17,11 +17,13 @@ public class AuthService {
     private final UserService userService;
     private final TokenGenerator tokenGenerator;
     private final AuthenticationManager authenticationManager;
+    private final UserDtoConverter converter;
 
-    public AuthService(UserService userService, TokenGenerator tokenGenerator, AuthenticationManager authenticationManager) {
+    public AuthService(UserService userService, TokenGenerator tokenGenerator, AuthenticationManager authenticationManager, UserDtoConverter converter) {
         this.userService = userService;
         this.tokenGenerator = tokenGenerator;
         this.authenticationManager = authenticationManager;
+        this.converter = converter;
     }
 
     public TokenResponseDto login(LoginRequest request) {
@@ -31,7 +33,7 @@ public class AuthService {
                             new UsernamePasswordAuthenticationToken(request.username(),
                                     request.password()));
             User user = userService.findUserByUsername(request.username());
-            return new TokenResponseDto(tokenGenerator.generateToken(authentication), UserDtoConverter.converter(user));
+            return new TokenResponseDto(tokenGenerator.generateToken(authentication), converter.converter(user));
         } catch (Exception e) {
             throw new AuthenticationException(e.getMessage());
         }

@@ -14,15 +14,17 @@ import java.util.stream.Collectors;
 public class PatientService {
 
     private final PatientRepository repository;
+    private final PatientDtoConverter converter;
 
-    public PatientService(PatientRepository repository) {
+    public PatientService(PatientRepository repository, PatientDtoConverter converter) {
         this.repository = repository;
+        this.converter = converter;
     }
 
     public List<PatientDto> getAllPatients() {
         return repository.findAll()
                 .stream()
-                .map(PatientDtoConverter::converter)
+                .map(converter::converter)
                 .collect(Collectors.toList());
     }
 

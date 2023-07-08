@@ -19,11 +19,11 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-    public UserDto createUser(User user) {
+    public void createUser(User user) {
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         User savedUser = repository.save(user);
 
-        return new UserDto(
+        new UserDto(
                 user.getUsername(),
                 user.getRole());
     }
