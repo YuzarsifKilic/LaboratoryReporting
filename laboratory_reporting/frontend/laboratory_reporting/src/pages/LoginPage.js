@@ -3,13 +3,15 @@ import React, { useContext } from 'react';
 import { useState } from 'react';
 import { useAuth } from '../security/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { Button, Result } from 'antd';
 
 export default function LoginPage() {
 
     const [username, setUsername] = useState("")
     const [password, setPassword] = useState("")
+    const [error, setError] = useState(false)
 
-    const { login } = useAuth()
+    const { login, isAuthenticated } = useAuth()
 
     const navigate = useNavigate()
 
@@ -23,6 +25,9 @@ export default function LoginPage() {
         console.log(password)
         if (await login(username, password))
             navigate("/report")
+
+        if (!isAuthenticated)
+            setError(true)
     }
 
     return (
@@ -67,6 +72,10 @@ export default function LoginPage() {
                     >
                         Giriş Yap
                     </button>
+                    {
+                        error &&
+                            <div className='mt-4 text-white bg-red-600 rounded-xl'>Giriş Bilgileri Yanlış Tekrar Deneyin</div>
+                    }
                 </div>
             </div>
         </div>

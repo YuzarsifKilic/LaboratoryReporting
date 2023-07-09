@@ -59,7 +59,7 @@ export default function AddReport() {
       createReport(diagnosisHeader, diagnosisDescription, selectedPatient.id, selectedLaborant.id)
         .then((response) => {
           console.log(response.data)
-          setreportId(response.data)
+          setreportId(response.data.id)
           if (response.status === 200)
             setsuccessfull(true)
 
