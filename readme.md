@@ -41,7 +41,6 @@ POST /api/v1/user/login -  checking username and password to login site
 ```
 
 ## Run & Build
-$PORT:8080
 
 ```
 cd laboratory_reporting/api/LaboratoryReporting
