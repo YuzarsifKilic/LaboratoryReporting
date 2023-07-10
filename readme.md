@@ -3,7 +3,7 @@
 ## Spring Boot And React Application
 
 ### Summary
-This projects show reports, update reports and delete reports.
+This projects show reports, update reports and delete reports. My endpoints are protected with jwt tokens. My tokens expire 30 minutes
 
 ### Requirements
 * Laborants can have n reports but a report can only have one laborant
