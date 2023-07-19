@@ -120,8 +120,13 @@ public class ReportService {
     }
 
     public List<ReportDto> getReportsByPatient(ReportRequestByPatient request) {
+        final String firstCharacterOfFirstName = request.firstName().substring(0, 1);
+        final String firstCharacterOfLastName = request.lastName().substring(0, 1);
+
         return repository.findAll()
                 .stream()
+                .filter(r -> r.getPatient().getFirstName().equals(firstCharacterOfFirstName))
+                .filter(r -> r.getPatient().getLastName().equals(firstCharacterOfLastName))
                 .filter(r ->
                         r.getPatient().getFirstName().equals(request.firstName()) &&
                         r.getPatient().getLastName().equals(request.lastName()))
@@ -130,8 +135,12 @@ public class ReportService {
     }
 
     public List<ReportDto> getReportsByLaborant(ReportRequestByLaborant request) {
+        final String firstCharacterOfFirstName = request.firstName().substring(0, 1);
+        final String firstCharacterOfLastName = request.lastName().substring(0, 1);
         return repository.findAll()
                 .stream()
+                .filter(r -> r.getLaborant().getFirstName().equals(firstCharacterOfFirstName))
+                .filter(r -> r.getLaborant().getLastName().equals(firstCharacterOfLastName))
                 .filter(r ->
                         r.getLaborant().getFirstName().equals(request.firstName()) &&
                         r.getLaborant().getLastName().equals(request.lastName()))
