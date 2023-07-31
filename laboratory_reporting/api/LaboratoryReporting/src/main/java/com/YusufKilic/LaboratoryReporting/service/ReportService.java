@@ -120,32 +120,40 @@ public class ReportService {
     }
 
     public List<ReportDto> getReportsByPatient(ReportRequestByPatient request) {
-        final String firstCharacterOfFirstName = request.firstName().substring(0, 1);
-        final String firstCharacterOfLastName = request.lastName().substring(0, 1);
+        long start = System.nanoTime();
 
-        return repository.findAll()
-                .stream()
-                .filter(r -> r.getPatient().getFirstName().equals(firstCharacterOfFirstName))
-                .filter(r -> r.getPatient().getLastName().equals(firstCharacterOfLastName))
-                .filter(r ->
-                        r.getPatient().getFirstName().equals(request.firstName()) &&
-                        r.getPatient().getLastName().equals(request.lastName()))
+        List<Report> reportList = repository.findReportsByPatient(request.firstName(), request.lastName());
+
+        List<ReportDto> collect = reportList.stream()
                 .map(converter::converter)
                 .collect(Collectors.toList());
+
+        long finish = System.nanoTime();
+
+        System.out.println("\nPatient First Name and Last Name : " + request.firstName() + " " + request.lastName());
+        System.out.print("\nStart : " + start);
+        System.out.print("\nFinish : " + finish);
+        System.out.print("\nTime : " + (finish - start) / 1000000.0 + " ms");
+
+        return collect;
     }
 
     public List<ReportDto> getReportsByLaborant(ReportRequestByLaborant request) {
-        final String firstCharacterOfFirstName = request.firstName().substring(0, 1);
-        final String firstCharacterOfLastName = request.lastName().substring(0, 1);
-        return repository.findAll()
-                .stream()
-                .filter(r -> r.getLaborant().getFirstName().equals(firstCharacterOfFirstName))
-                .filter(r -> r.getLaborant().getLastName().equals(firstCharacterOfLastName))
-                .filter(r ->
-                        r.getLaborant().getFirstName().equals(request.firstName()) &&
-                        r.getLaborant().getLastName().equals(request.lastName()))
+        long start = System.nanoTime();
+        List<Report> reportList = repository.findReportsByLaborant(request.firstName(), request.lastName());
+
+        List<ReportDto> collect = reportList.stream()
                 .map(converter::converter)
                 .collect(Collectors.toList());
+
+        long finish = System.nanoTime();
+
+        System.out.println("\nLaborant First Name and Last Name : " + request.firstName()  + " " + request.lastName());
+        System.out.print("\nStart : " + start);
+        System.out.print("\nFinish : " + finish);
+        System.out.print("\nTime : " + (finish - start) / 1000000.0 + " ms");
+
+        return collect;
     }
 
     private LocalDateTime getLocalDateTimeNow() {
